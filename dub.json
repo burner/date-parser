@@ -7,17 +7,6 @@
         {
             "name": "library",
             "targetType": "library"
-        },
-        {
-            "name": "unittest",
-            "mainSourceFile": "bench.d",
-            "targetType": "executable"
-        },
-        {
-            "name": "benchmark",
-            "mainSourceFile": "bench.d",
-            "targetType": "executable",
-            "dflags-ldc": ["-O5", "-singleobj", "-boundscheck=off"]
         }
     ],
     "buildTypes": {
