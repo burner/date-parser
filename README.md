@@ -1,4 +1,4 @@
-# Date Parser 2 (dateparser2)
+# Date Parser 2 (dateparser2) made @safe
 
 A port of the Python Dateutil date parser.
 This module offers a generic date/time string parser which is able to parse
