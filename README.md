@@ -44,3 +44,9 @@ Thu Sep 25 10:36:28 BRST 2003 | 156 µs | 10 μs | 15 μs
 2003-09-25T10:49:41.5-03:00 | 136 µs | 5 μs | 6 μs
 09.25.2003 | 124 µs | 5 μs | 7 μs
 2003-09-25 | 66.4 µs | 4 μs | 5 μs
+
+## Difference to Date Parser
+
+The difference to the original [dateparser](https://github.com/JackStouffer/date-parser)
+is that this version does not use allocator but plain old `new` resulting in
+being able to be called from `@safe` code.

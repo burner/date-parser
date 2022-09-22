@@ -264,7 +264,7 @@ public:
     }
 }
 
-unittest
+@safe unittest
 {
     import std.algorithm.comparison : equal;
     import std.utf : byCodeUnit;
@@ -282,7 +282,7 @@ unittest
     ));
 }
 
-unittest
+@safe unittest
 {
     import std.algorithm.comparison : equal;
     import std.utf : byChar;

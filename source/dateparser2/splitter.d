@@ -145,7 +145,7 @@ else
     }
 }
 
-unittest
+@safe unittest
 {
     import std.algorithm.comparison : equal;
 

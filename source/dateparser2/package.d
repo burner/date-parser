@@ -30,6 +30,7 @@ debug(dateparser2) import std.stdio;
 import std.datetime;
 import std.traits;
 import std.typecons;
+import std.exception : enforce;
 import std.regex;
 import std.range;
 import dateparser2.timelexer;
@@ -88,7 +89,7 @@ auto parseMS(R)(R s) if (
     }
 }
 
-pure unittest
+@safe pure unittest
 {
     import std.typecons : tuple;
     import std.utf : byChar;
@@ -210,12 +211,8 @@ SysTime parse(Range)(Range timeString,
     Flag!"fuzzy" fuzzy = No.fuzzy,
     SysTime defaultDate = SysTime(DateTime(1, 1, 1))) if (
         isForwardRange!Range && !isInfinite!Range && isSomeChar!(ElementEncodingType!Range))
-in
 {
-    assert(defaultParser !is null, "Accessing defaultParser before static this initalization. Use your own Parser instance.");
-}
-do
-{
+    enforce(defaultParser !is null, "Accessing defaultParser before static this initalization. Use your own Parser instance.");
     // dfmt off
     return defaultParser.parse(
         timeString,
@@ -229,7 +226,7 @@ do
 }
 
 ///
-unittest
+@safe unittest
 {
     immutable brazilTime = new SimpleTimeZone(dur!"seconds"(-10_800));
     const(TimeZone)[string] timezones = ["BRST" : brazilTime];
@@ -237,7 +234,10 @@ unittest
     immutable parsed = parse("Thu Sep 25 10:36:28 BRST 2003", No.ignoreTimezone, timezones);
     // SysTime opEquals ignores timezones
     assert(parsed == SysTime(DateTime(2003, 9, 25, 10, 36, 28)));
-    assert(parsed.timezone == brazilTime);
+
+	() @trusted {
+    	assert(parsed.timezone == brazilTime);
+	}();
 
     assert(parse(
         "2003 10:36:28 BRST 25 Sep Thu",
@@ -252,7 +252,7 @@ unittest
 }
 
 /// Apply information on top of `defaultDate`
-unittest
+@safe unittest
 {
     assert("10:36:28".parse(No.ignoreTimezone, null, No.dayFirst, No.yearFirst,
         No.fuzzy, SysTime(DateTime(2016, 3, 15)))
@@ -265,7 +265,7 @@ unittest
     == SysTime(Date(2000, 3, 1)));
 }
 
-unittest
+@safe unittest
 {
     auto customParser = new Parser(new ParserInfo());
     assert(customParser.parse("2003-09-25T10:49:41") ==
@@ -273,7 +273,7 @@ unittest
 }
 
 /// Exceptions
-unittest
+@safe unittest
 {
     import std.exception : assertThrown;
     import std.conv : ConvException;
@@ -289,7 +289,7 @@ unittest
 }
 // dfmt on
 
-unittest
+@safe unittest
 {
     assert(parse("Thu Sep 10:36:28") == SysTime(DateTime(1, 9, 5, 10, 36, 28)));
     assert(parse("Thu 10:36:28") == SysTime(DateTime(1, 1, 3, 10, 36, 28)));
@@ -300,7 +300,7 @@ unittest
     assert(parse("10:36") == SysTime(DateTime(1, 1, 1, 10, 36)));
 }
 
-unittest
+@safe unittest
 {
     assert(parse("Thu 10:36:28") == SysTime(DateTime(1, 1, 3, 10, 36, 28)));
     assert(parse("20030925T104941") == SysTime(DateTime(2003, 9, 25, 10, 49, 41)));
@@ -313,7 +313,7 @@ unittest
     assert(parse("19970902090807") == SysTime(DateTime(1997, 9, 2, 9, 8, 7)));
 }
 
-unittest
+@safe unittest
 {
     assert(parse("2003 09 25") == SysTime(DateTime(2003, 9, 25)));
     assert(parse("2003 Sep 25") == SysTime(DateTime(2003, 9, 25)));
@@ -331,7 +331,7 @@ unittest
     assert(parse("25 09 03") == SysTime(DateTime(2003, 9, 25)));
 }
 
-unittest
+@safe unittest
 {
     assert(parse("03 25 Sep") == SysTime(DateTime(2003, 9, 25)));
     assert(parse("2003 25 Sep") == SysTime(DateTime(2003, 9, 25)));
@@ -341,7 +341,7 @@ unittest
 }
 
 // Naked times
-unittest
+@safe unittest
 {
     assert(parse("10h36m28.5s") == SysTime(DateTime(1, 1, 1, 10, 36, 28), msecs(500)));
     assert(parse("10h36m28s") == SysTime(DateTime(1, 1, 1, 10, 36, 28)));
@@ -352,7 +352,7 @@ unittest
 }
 
 // AM vs PM
-unittest
+@safe unittest
 {
     assert(parse("10h am") == SysTime(DateTime(1, 1, 1, 10)));
     assert(parse("10h pm") == SysTime(DateTime(1, 1, 1, 22)));
@@ -372,7 +372,7 @@ unittest
 }
 
 // ISO and ISO stripped
-unittest
+@safe unittest
 {
     immutable zone = new SimpleTimeZone(dur!"seconds"(-10_800));
 
@@ -404,7 +404,7 @@ unittest
 }
 
 // Dashes
-unittest
+@safe unittest
 {
     assert(parse("2003-09-25") == SysTime(DateTime(2003, 9, 25)));
     assert(parse("2003-Sep-25") == SysTime(DateTime(2003, 9, 25)));
@@ -428,7 +428,7 @@ unittest
 }
 
 // Dots
-unittest
+@safe unittest
 {
     assert(parse("2003.09.25") == SysTime(DateTime(2003, 9, 25)));
     assert(parse("2003.Sep.25") == SysTime(DateTime(2003, 9, 25)));
@@ -446,7 +446,7 @@ unittest
 }
 
 // Slashes
-unittest
+@safe unittest
 {
     assert(parse("2003/09/25") == SysTime(DateTime(2003, 9, 25)));
     assert(parse("2003/Sep/25") == SysTime(DateTime(2003, 9, 25)));
@@ -464,7 +464,7 @@ unittest
 }
 
 // Random formats
-unittest
+@safe unittest
 {
     assert(parse("Wed, July 10, '96") == SysTime(DateTime(1996, 7, 10, 0, 0)));
     assert(parse("1996.07.10 AD at 15:08:56 PDT",
@@ -516,7 +516,7 @@ unittest
 }
 
 // Pertain, weekday, and month
-unittest
+@safe unittest
 {
     assert(parse("Sep 03") == SysTime(DateTime(1, 9, 3)));
     assert(parse("Sep of 03") == SysTime(DateTime(2003, 9, 1)));
@@ -527,7 +527,7 @@ unittest
 }
 
 // Fuzzy
-unittest
+@safe unittest
 {
     // Sometimes fuzzy parsing results in AM/PM flag being set without
     // hours - if it's fuzzy it should ignore that.
@@ -560,7 +560,7 @@ unittest
 
 // dfmt off
 /// Custom parser info allows for international time representation
-unittest
+@safe unittest
 {
     import std.utf : byChar;
 
@@ -595,7 +595,7 @@ unittest
 // dfmt on
 
 // Test ranges
-unittest
+@safe unittest
 {
     import std.utf : byCodeUnit, byChar;
 
@@ -613,7 +613,7 @@ unittest
 }
 
 // Test different string types
-unittest
+@safe unittest
 {
     import std.meta : AliasSeq;
     import std.conv : to;
@@ -638,7 +638,7 @@ unittest
 }
 
 // Issue #1
-unittest
+@safe unittest
 {
     assert(parse("Sat, 12 Mar 2016 01:30:59 -0900",
         Yes.ignoreTimezone) == SysTime(DateTime(2016, 3, 12, 01, 30, 59)));
@@ -657,7 +657,7 @@ final class Parser {
 
 public:
     ///
-    this(const ParserInfo parserInfo = null)
+    this(const ParserInfo parserInfo = null) @safe
     {
         if (parserInfo is null)
         {
@@ -680,8 +680,8 @@ public:
         Flag!"dayFirst" dayFirst = No.dayFirst,
         Flag!"yearFirst" yearFirst = No.yearFirst,
         Flag!"fuzzy" fuzzy = No.fuzzy,
-        SysTime defaultDate = SysTime(Date(1, 1, 1))) if (
-            isForwardRange!Range && !isInfinite!Range && isSomeChar!(ElementEncodingType!Range))
+        SysTime defaultDate = SysTime(Date(1, 1, 1))) @safe 
+	if(isForwardRange!Range && !isInfinite!Range && isSomeChar!(ElementEncodingType!Range))
     {
         import std.conv : to, ConvException;
 
@@ -696,16 +696,18 @@ public:
                 && res.shortcutResult.isNull() && res.shortcutTimeResult.isNull())
             throw new ConvException("String does not contain a date.");
 
-        if (res.shortcutResult.isNull && res.shortcutTimeResult.isNull)
-        {
+        if (res.shortcutResult.isNull && res.shortcutTimeResult.isNull) {
             if (!res.year.isNull)
                 defaultDate.year(res.year);
 
             if (!res.day.isNull)
                 defaultDate.day(res.day);
 
-            if (!res.month.isNull)
-                defaultDate.month(to!Month(res.month));
+            if (!res.month.isNull) {
+				() @trusted {
+                	defaultDate.month(to!Month(res.month));
+				}();
+			}
 
             if (!res.hour.isNull)
                 defaultDate.hour(res.hour);
@@ -719,28 +721,29 @@ public:
             if (!res.microsecond.isNull)
                 defaultDate.fracSecs(usecs(res.microsecond));
 
-            if (!res.weekday.isNull() && (res.day.isNull || !res.day))
-            {
-                immutable delta_days = daysToDayOfWeek(
-                    defaultDate.dayOfWeek(),
-                    to!DayOfWeek(res.weekday)
-                );
+            if (!res.weekday.isNull() && (res.day.isNull || !res.day)) {
+                immutable delta_days = () @trusted {
+					return daysToDayOfWeek(defaultDate.dayOfWeek(),
+                    	to!DayOfWeek(res.weekday));
+				}();
                 defaultDate += dur!"days"(delta_days);
             }
-        }
-        else if (!res.shortcutTimeResult.isNull)
+        } else if (!res.shortcutTimeResult.isNull) {
             defaultDate = SysTime(DateTime(Date(
                 defaultDate.year,
                 defaultDate.month,
                 defaultDate.day,
             ), res.shortcutTimeResult.get()));
+		}	
 
         if (!ignoreTimezone)
         {
             if (res.tzname in timezoneInfos)
-                defaultDate = defaultDate.toOtherTZ(
-                    cast(immutable) timezoneInfos[res.tzname]
-                );
+				() @trusted {
+					defaultDate = defaultDate.toOtherTZ(
+						cast(immutable) timezoneInfos[res.tzname]
+					);
+				}();
             else if (res.tzname.length > 0 && (res.tzname == LocalTime().stdName
                     || res.tzname == LocalTime().dstName))
                 defaultDate = SysTime(cast(DateTime) defaultDate);
