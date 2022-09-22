@@ -24,9 +24,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module dateparser.ymd;
+module dateparser2.ymd;
 
-debug(dateparser) import std.stdio;
+debug(dateparser2) import std.stdio;
 import std.traits;
 import std.range;
 

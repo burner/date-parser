@@ -24,7 +24,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module dateparser.parseresult;
+module dateparser2.parseresult;
 
 import std.datetime;
 import std.typecons;

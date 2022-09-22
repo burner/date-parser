@@ -24,9 +24,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module dateparser.splitter;
+module dateparser2.splitter;
 
-debug(dateparser) import std.stdio;
+debug(dateparser2) import std.stdio;
 import std.compiler;
 import std.regex;
 import std.traits;

@@ -24,11 +24,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module dateparser.parserinfo;
+module dateparser2.parserinfo;
 
 import std.traits;
 import std.range;
-import dateparser.parseresult;
+import dateparser2.parseresult;
 
 package:
 

@@ -1,8 +1,8 @@
 {
-    "name": "dateparser",
+    "name": "dateparser2",
     "description": "Library for parsing randomly formatted date strings",
     "license": "BSL-1.0",
-    "authors": ["Jack Stouffer"],
+    "authors": ["Jack Stouffer", "Robert Schadek"],
     "configurations": [
         {
             "name": "library",

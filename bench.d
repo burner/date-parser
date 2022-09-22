@@ -2,10 +2,10 @@ import std.datetime;
 import std.stdio;
 import std.compiler;
 import std.conv;
+import dateparser2;
 import std.experimental.allocator;
 import std.experimental.allocator.mallocator;
 import std.experimental.allocator.gc_allocator;
-import dateparser;
 
 enum testCount = 500_000;
 
@@ -17,10 +17,9 @@ enum stringFive = "25-Sep-2003";
 
 void main()
 {
-    version(unittest) {} else
-    {
-        
-        auto customParser = new Parser!Mallocator(new ParserInfo());
+    version(unittest) {
+	} else {
+        auto customParser = new Parser(new ParserInfo());
 
         auto result = to!Duration(benchmark!(() => customParser.parse(stringOne))(testCount)[0] / testCount);
         auto result2 = to!Duration(benchmark!(() => customParser.parse(stringTwo))(testCount)[0] / testCount);

@@ -24,13 +24,13 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-module dateparser.timelexer;
+module dateparser2.timelexer;
 
-debug(dateparser) import std.stdio;
+debug(dateparser2) import std.stdio;
 import std.range;
 import std.traits;
 import std.regex;
-import dateparser.splitter;
+import dateparser2.splitter;
 
 private enum State
 {
@@ -134,7 +134,7 @@ public:
 
             if (state == State.EMPTY)
             {
-                debug(dateparser) writeln("EMPTY");
+                debug(dateparser2) writeln("EMPTY");
                 // First character of the token - determines if we're starting
                 // to parse a word, a number or something else.
                 token ~= nextChar;
@@ -150,11 +150,11 @@ public:
                 }
                 else
                     break; //emit token
-                debug(dateparser) writeln("TOKEN ", token, " STATE ", state);
+                debug(dateparser2) writeln("TOKEN ", token, " STATE ", state);
             }
             else if (state == State.ALPHA)
             {
-                debug(dateparser) writeln("STATE ", state, " nextChar: ", nextChar);
+                debug(dateparser2) writeln("STATE ", state, " nextChar: ", nextChar);
                 // If we've already started reading a word, we keep reading
                 // letters until we find something that's not part of a word.
                 seenLetters = true;
@@ -181,7 +181,7 @@ public:
             {
                 // If we've already started reading a number, we keep reading
                 // numbers until we find something that doesn't fit.
-                debug(dateparser) writeln("STATE ", state, " nextChar: ", nextChar);
+                debug(dateparser2) writeln("STATE ", state, " nextChar: ", nextChar);
                 if (nextChar.isDigit)
                     token ~= nextChar;
                 else if (nextChar == '.' || (nextChar == ',' && token.length >= 2))
@@ -192,13 +192,13 @@ public:
                 else
                 {
                     charStack ~= nextChar;
-                    debug(dateparser) writeln("charStack add: ", charStack);
+                    debug(dateparser2) writeln("charStack add: ", charStack);
                     break; //emit token
                 }
             }
             else if (state == State.ALPHA_PERIOD)
             {
-                debug(dateparser) writeln("STATE ", state, " nextChar: ", nextChar);
+                debug(dateparser2) writeln("STATE ", state, " nextChar: ", nextChar);
                 // If we've seen some letters and a dot separator, continue
                 // parsing, and the tokens will be broken up later.
                 seenLetters = true;
@@ -219,7 +219,7 @@ public:
             }
             else if (state == State.NUMERIC_PERIOD)
             {
-                debug(dateparser) writeln("STATE ", state, " nextChar: ", nextChar);
+                debug(dateparser2) writeln("STATE ", state, " nextChar: ", nextChar);
                 // If we've seen at least one dot separator, keep going, we'll
                 // break up the tokens later.
                 if (nextChar == '.' || nextChar.isDigit)
@@ -237,7 +237,7 @@ public:
             }
         }
 
-        debug(dateparser) writeln("STATE ", state, " seenLetters: ", seenLetters);
+        debug(dateparser2) writeln("STATE ", state, " seenLetters: ", seenLetters);
         if ((state == State.ALPHA_PERIOD || state == State.NUMERIC_PERIOD)
                 && (seenLetters || token.byCodeUnit.count('.') > 1
                 || (token[$ - 1] == '.' || token[$ - 1] == ',')))

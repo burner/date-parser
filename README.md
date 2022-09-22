@@ -1,10 +1,10 @@
-# Date Parser
+# Date Parser 2 (dateparser2)
 
-[![Build Status](https://travis-ci.org/JackStouffer/date-parser.svg?branch=master)](https://travis-ci.org/JackStouffer/date-parser) [![Dub](https://img.shields.io/dub/v/dateparser.svg)](http://code.dlang.org/packages/dateparser) [![codecov](https://codecov.io/gh/JackStouffer/date-parser/branch/master/graph/badge.svg)](https://codecov.io/gh/JackStouffer/date-parser)
-
-A port of the Python Dateutil date parser. This module offers a generic date/time string parser which is able to parse most known formats to represent a date and/or time. This module attempts to be forgiving with regards to unlikely input formats, returning a `SysTime` object even for dates which are ambiguous.
-
-Tested with ldc v1.12.0 - v1.13.0 and dmd v2.081.2 - v2.084.0. May work with earlier versions.
+A port of the Python Dateutil date parser.
+This module offers a generic date/time string parser which is able to parse
+most known formats to represent a date and/or time. 
+This module attempts to be forgiving with regards to unlikely input formats, 
+returning a `SysTime` object even for dates which are ambiguous.
 
 ## Simple Example
 
@@ -12,7 +12,7 @@ View the docs for more.
 
 ```
 import std.datetime;
-import dateparser;
+import dateparser2;
 
 void main()
 {
@@ -22,9 +22,6 @@ void main()
 }
 ```
 
-## Docs
-
-http://jackstouffer.com/dateparser/
 
 ## Install With Dub
 
@@ -32,7 +29,7 @@ http://jackstouffer.com/dateparser/
 {
     ...
     "dependencies": {
-        "dateparser": "~>3.0.0"
+        "dateparser2": "~>4.0.0"
     }
 }
 ```
