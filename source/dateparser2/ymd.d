@@ -80,6 +80,9 @@ public:
         foreach (index, ref item; data[])
         {
             auto potentialYearTokens = tokens.filter!(a => YMD.couldBeYear(a, item));
+			if(potentialYearTokens.empty) {
+				return -1;
+			}
             immutable frontLength = potentialYearTokens.front.length;
             immutable length = potentialYearTokens.walkLength(2);
 
@@ -179,7 +182,7 @@ public:
                         data[2] = 0;
                         break;
                     default: break;
-                }                
+                }
             }
 
             if (dataPosition > 1 || mstridx == -1)

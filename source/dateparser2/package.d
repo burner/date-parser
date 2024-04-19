@@ -289,6 +289,11 @@ SysTime parse(Range)(Range timeString,
 }
 // dfmt on
 
+@safe unittest {
+	auto p = parse("0000-00-00");
+    assert(p == SysTime(DateTime(0, 1, 1, 0, 0, 0)), (cast(DateTime)p).toISOExtString());
+}
+
 @safe unittest
 {
     assert(parse("Thu Sep 10:36:28") == SysTime(DateTime(1, 9, 5, 10, 36, 28)));
@@ -680,7 +685,7 @@ public:
         Flag!"dayFirst" dayFirst = No.dayFirst,
         Flag!"yearFirst" yearFirst = No.yearFirst,
         Flag!"fuzzy" fuzzy = No.fuzzy,
-        SysTime defaultDate = SysTime(Date(1, 1, 1))) @safe 
+        SysTime defaultDate = SysTime(Date(1, 1, 1))) @safe
 	if(isForwardRange!Range && !isInfinite!Range && isSomeChar!(ElementEncodingType!Range))
     {
         import std.conv : to, ConvException;
@@ -734,7 +739,7 @@ public:
                 defaultDate.month,
                 defaultDate.day,
             ), res.shortcutTimeResult.get()));
-		}	
+		}
 
         if (!ignoreTimezone)
         {
@@ -1054,7 +1059,7 @@ private:
                                     catch (DateTimeException) {}
                                 }
                             }
-                            
+
                             ymd.put(tokens[i]);
                         }
                         else
@@ -1223,7 +1228,7 @@ private:
                 }
                 else if (!(0 <= res.hour && res.hour <= 12))
                 {
-                    //If AM/PM is found, it's a 12 hour clock, so raise 
+                    //If AM/PM is found, it's a 12 hour clock, so raise
                     //an error for invalid range
                     if (fuzzy)
                         valIsAMPM = false;
